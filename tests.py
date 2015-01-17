@@ -148,6 +148,37 @@ def test_multiple_machines():
     person.run()
     eq_(things_done, ["Person.ran"])
 
+def test_state_machine_inheritance():
+    @acts_as_state_machine
+    class Dog(object):
+        sleeping = State(initial=True)
+        running = State()
+
+        run = Event(from_states=sleeping, to_state=running)
+        sleep = Event(from_states=(running,), to_state=sleeping)
+
+        @before('run')
+        def on_run(self):
+            things_done.append("Dog.ran")
+
+    @acts_as_state_machine
+    class Puppy(Dog):
+        @before('run')
+        def on_sleep(self):
+            things_done.append("Puppy.ran_fast")
+
+    things_done = []
+    dog = Dog()
+    puppy = Puppy()
+    eq_(dog.current_state, 'sleeping')
+    eq_(puppy.current_state, 'sleeping')
+
+    assert dog.is_sleeping
+    assert puppy.is_sleeping
+    dog.run()
+    puppy.run()
+    eq_(things_done, ['Dog.ran', 'Puppy.ran_fast', 'Dog.ran'])
+
 ###################################################################################
 ## SqlAlchemy Tests
 ###################################################################################

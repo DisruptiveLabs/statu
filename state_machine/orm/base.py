@@ -1,10 +1,20 @@
 from __future__ import absolute_import
 import inspect
+
 from state_machine.models import Event, State, InvalidStateTransition
 
 
-class BaseAdaptor(object):
+def _get_callbacks(self, when, event_name):
+    callbacks = []
+    for clazz in inspect.getmro(self.__class__):
+        if hasattr(clazz, 'callback_cache') and clazz.callback_cache:
+            if clazz.__name__ in clazz.callback_cache:
+                if event_name in clazz.callback_cache[clazz.__name__][when]:
+                    callbacks.extend(clazz.callback_cache[clazz.__name__][when][event_name])
+    return callbacks
 
+
+class BaseAdaptor(object):
     def __init__(self, original_class):
         self.original_class = original_class
 
@@ -22,7 +32,7 @@ class BaseAdaptor(object):
                         raise ValueError("multiple initial states!")
                     initial_state = value
 
-                #add its name to itself:
+                # add its name to itself:
                 setattr(value, 'name', member)
 
                 is_method_string = "is_" + member
@@ -46,30 +56,26 @@ class BaseAdaptor(object):
 
                 def event_meta_method(event_name, event_description):
                     def f(self):
-                        #assert current state
+                        # assert current state
                         if self.current_state not in event_description.from_states:
                             raise InvalidStateTransition
 
                         # fire before_change
                         failed = False
-                        if self.__class__.callback_cache and \
-                                event_name in self.__class__.callback_cache[_adaptor.original_class.__name__]['before']:
-                            for callback in self.__class__.callback_cache[_adaptor.original_class.__name__]['before'][event_name]:
-                                result = callback(self)
-                                if result is False:
-                                    print("One of the 'before' callbacks returned false, breaking")
-                                    failed = True
-                                    break
+                        for callback in _get_callbacks(self, 'before', event_name):
+                            result = callback(self)
+                            if result is False:
+                                print("One of the 'before' callbacks returned false, breaking")
+                                failed = True
+                                break
 
                         #change state
                         if not failed:
                             _adaptor.update(self, event_description.to_state.name)
 
                             #fire after_change
-                            if self.__class__.callback_cache and \
-                                    event_name in self.__class__.callback_cache[_adaptor.original_class.__name__]['after']:
-                                for callback in self.__class__.callback_cache[_adaptor.original_class.__name__]['after'][event_name]:
-                                    callback(self)
+                            for callback in _get_callbacks(self, 'after', event_name):
+                                callback(self)
 
                     return f
 
@@ -86,11 +92,10 @@ class BaseAdaptor(object):
         def current_state_method():
             def f(self):
                 return self.aasm_state
+
             return property(f)
 
         class_dict['current_state'] = current_state_method()
-
-        class_dict.update(original_class.__dict__)
 
         # Get states
         state_method_dict, initial_state = self.process_states(original_class)
@@ -101,8 +106,10 @@ class BaseAdaptor(object):
         event_method_dict = self.process_events(original_class)
         class_dict.update(event_method_dict)
 
-        clazz = type(class_name, original_class.__bases__, class_dict)
-        return clazz
+        for key in class_dict:
+            setattr(original_class, key, class_dict[key])
+
+        return original_class
 
     def extra_class_members(self, initial_state):
         raise NotImplementedError
