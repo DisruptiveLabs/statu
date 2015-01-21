@@ -22,7 +22,7 @@ try:
 except ImportError:
     sqlalchemy = None
 
-from state_machine import acts_as_state_machine, before, State, Event, after, InvalidStateTransition
+from state_machine import acts_as_state_machine, before, State, Event, after, InvalidStateTransition, with_state_machine_events
 
 
 def requires_mongoengine(func):
@@ -161,7 +161,7 @@ def test_state_machine_inheritance():
         def on_run(self):
             things_done.append("Dog.ran")
 
-    @acts_as_state_machine
+    @with_state_machine_events
     class Puppy(Dog):
         @before('run')
         def on_sleep(self):
