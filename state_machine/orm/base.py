@@ -14,6 +14,16 @@ def _get_callbacks(self, when, event_name):
     return callbacks
 
 
+def _get_next_event_names(self):
+    next_event_names = set()
+    for event_name, event in self.get_events().iteritems():
+        for from_state in event.from_states:
+            if from_state.name == self.current_state:
+                next_event_names.add(event_name)
+                break
+    return list(next_event_names)
+
+
 class BaseAdaptor(object):
     def __init__(self, original_class):
         self.original_class = original_class
@@ -50,6 +60,7 @@ class BaseAdaptor(object):
     def process_events(self, original_class):
         _adaptor = self
         event_method_dict = dict()
+        events = {}
         for member, value in self.get_potential_state_machine_attributes(original_class):
             if isinstance(value, Event):
                 # Create event methods
@@ -80,6 +91,8 @@ class BaseAdaptor(object):
                     return f
 
                 event_method_dict[member] = event_meta_method(member, value)
+                events[member] = value
+        event_method_dict['get_events'] = lambda self: events
         return event_method_dict
 
     def modifed_class(self, original_class, callback_cache):
@@ -96,6 +109,7 @@ class BaseAdaptor(object):
             return property(f)
 
         class_dict['current_state'] = current_state_method()
+        class_dict['get_next_event_names'] = _get_next_event_names
 
         # Get states
         state_method_dict, initial_state = self.process_states(original_class)
