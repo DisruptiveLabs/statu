@@ -24,6 +24,14 @@ def _get_next_event_names(self):
     return list(next_event_names)
 
 
+def _get_next_event_methods(self):
+    next_event_names = self.get_next_event_names()
+    next_events = {}
+    for next_event_name in next_event_names:
+        next_events[next_event_name] = getattr(self, next_event_name)
+    return next_events
+
+
 class BaseAdaptor(object):
     def __init__(self, original_class):
         self.original_class = original_class
@@ -110,6 +118,7 @@ class BaseAdaptor(object):
 
         class_dict['current_state'] = current_state_method()
         class_dict['get_next_event_names'] = _get_next_event_names
+        class_dict['get_next_event_methods'] = _get_next_event_methods
 
         # Get states
         state_method_dict, initial_state = self.process_states(original_class)

@@ -472,16 +472,24 @@ def test_events_and_next_event_names():
     next_event_names = robot.get_next_event_names()
     eq_(next_event_names, ['run'])
     dynamic_event_name = next_event_names[0]
-    dynamic_event = getattr(robot, dynamic_event_name)
-    dynamic_event()
+    dynamic_event_method = getattr(robot, dynamic_event_name)
+    dynamic_event_method()
     assert robot.is_running
 
+    # Demonstrate getting the next event method using getattr with the event name.
     next_event_names = robot.get_next_event_names()
     eq_(next_event_names, ['cleanup', 'sleep'])
     dynamic_event_name = next_event_names[1]
-    dynamic_event = getattr(robot, dynamic_event_name)
-    dynamic_event()
+    dynamic_event_method = getattr(robot, dynamic_event_name)
+    dynamic_event_method()
     assert robot.is_sleeping
+
+    # Demonstrate getting the next event method using the get_next_events method.
+    next_event_methods = robot.get_next_event_methods()
+    eq_(next_event_methods.keys(), ['run'])
+    dynamic_event_method = next_event_methods['run']
+    dynamic_event_method()
+    assert robot.is_running
 
 
 if __name__ == "__main__":
