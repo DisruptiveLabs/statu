@@ -432,6 +432,65 @@ def test_before_callback_blocking_transition():
     assert runner.is_sleeping
     assert not runner.is_running
 
+def test_events_and_next_event_names():
+    @acts_as_state_machine
+    class Robot():
+        name = 'R2-D2'
+
+        sleeping = State(initial=True)
+        running = State()
+        cleaning = State()
+
+        run = Event(from_states=sleeping, to_state=running)
+        cleanup = Event(from_states=running, to_state=cleaning)
+        sleep = Event(from_states=(running, cleaning), to_state=sleeping)
+
+        @before('sleep')
+        def do_one_thing(self):
+            print("{} is sleepy".format(self.name))
+
+        @before('sleep')
+        def do_another_thing(self):
+            print("{} is REALLY sleepy".format(self.name))
+
+        @after('sleep')
+        def snore(self):
+            print("Zzzzzzzzzzzz")
+
+        @after('sleep')
+        def snore(self):
+            print("Zzzzzzzzzzzzzzzzzzzzzz")
+
+
+    robot = Robot()
+    eq_(robot.current_state, 'sleeping')
+    assert robot.is_sleeping
+    assert not robot.is_running
+    events = robot.get_events()
+    event_names = events.keys()
+    eq_(event_names, ['sleep', 'cleanup', 'run'])
+    next_event_names = robot.get_next_event_names()
+    eq_(next_event_names, ['run'])
+    dynamic_event_name = next_event_names[0]
+    dynamic_event_method = getattr(robot, dynamic_event_name)
+    dynamic_event_method()
+    assert robot.is_running
+
+    # Demonstrate getting the next event method using getattr with the event name.
+    next_event_names = robot.get_next_event_names()
+    eq_(next_event_names, ['cleanup', 'sleep'])
+    dynamic_event_name = next_event_names[1]
+    dynamic_event_method = getattr(robot, dynamic_event_name)
+    dynamic_event_method()
+    assert robot.is_sleeping
+
+    # Demonstrate getting the next event method using the get_next_events method.
+    next_event_methods = robot.get_next_event_methods()
+    eq_(next_event_methods.keys(), ['run'])
+    dynamic_event_method = next_event_methods['run']
+    dynamic_event_method()
+    assert robot.is_running
+
 
 if __name__ == "__main__":
     nose.run()
