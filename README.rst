@@ -1,5 +1,5 @@
-state\_machine
-==============
+statu - a python state machine
+==============================
 
 state machine for humans
 
@@ -8,9 +8,9 @@ state machine for humans
 There are two types of developers in this world: those who love state
 machines and those who *will* eventually.
 
-I fall in the first camp. I think it is really important to have a
-declarative way to define the states of an object. That’s why I
-developed ``state_machine``.
+We fall in the first camp. We think it is really important to have a
+declarative way to define the states of an object. That’s why we are
+continuing development of ``statu``.
 
 Install
 -------
@@ -19,8 +19,8 @@ Install
 
     pip install state_machine
 
-.. |Build Status| image:: https://travis-ci.org/jtushman/state_machine.svg?branch=master
-   :target: https://travis-ci.org/jtushman/state_machine
+.. |Build Status| image:: https://travis-ci.org/disruptivelabs/statu.svg?branch=master
+   :target: https://travis-ci.org/disruptivelabs/statu
 
 Basic Usage
 -----------
@@ -175,15 +175,17 @@ Issues / Roadmap:
 Questions / Issues
 ------------------
 
-Feel free to ping me on twitter: `@tushman`_
-or add issues or PRs at https://github.com/jtushman/state_machine
-
-.. _@tushman: http://twitter.com/tushman
+Feel free to open an issue, PR, or shoot us an email at `pypi@comanage.com`
 
 Thank you
 ---------
 
-to `aasm`_ and ruby’s `state\_machine`_ and all other state machines
+to `jtushman` for getting this library off the ground, and letting us fork
+and continue the development here
+
+.. _@tushman: http://twitter.com/tushman
+
+and to `aasm`_ and ruby’s `state\_machine`_ and all other state machines
 that I loved before
 
 .. _aasm: https://github.com/aasm/aasm

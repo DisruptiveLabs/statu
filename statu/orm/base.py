@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 import inspect
 
-from state_machine.models import Event, State, InvalidStateTransition
+from statu.models import Event, State, InvalidStateTransition
 
 
 def _get_callbacks(self, when, event_name):

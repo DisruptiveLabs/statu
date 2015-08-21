@@ -5,7 +5,7 @@ try:
 except ImportError as e:
     mongoengine = None
 
-from state_machine.orm.base import BaseAdaptor
+from statu.orm.base import BaseAdaptor
 
 
 class MongoAdaptor(BaseAdaptor):

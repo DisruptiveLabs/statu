@@ -22,7 +22,7 @@ try:
 except ImportError:
     sqlalchemy = None
 
-from state_machine import acts_as_state_machine, before, State, Event, after, InvalidStateTransition, with_state_machine_events
+from statu import acts_as_state_machine, before, State, Event, after, InvalidStateTransition, with_state_machine_events
 
 
 def requires_mongoengine(func):

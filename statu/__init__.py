@@ -1,7 +1,7 @@
 import inspect
 
-from state_machine.models import Event, State, InvalidStateTransition
-from state_machine.orm import get_adaptor
+from statu.models import Event, State, InvalidStateTransition
+from statu.orm import get_adaptor
 
 _temp_callback_cache = None
 

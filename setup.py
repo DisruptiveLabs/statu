@@ -13,12 +13,12 @@ def get_packages():
 
 required_modules = []
 
-setup(name='state_machine',
-      version='0.2.11',
+setup(name='statu',
+      version='0.3.0',
       description='Python State Machines for Humans',
-      url='http://github.com/jtushman/state_machine',
-      author='Jonathan Tushman',
-      author_email='jonathan@zefr.com',
+      url='http://github.com/DisruptiveLabs/statu',
+      author='Disruptive Labs',
+      author_email='pypi@comanage.com',
       install_requires=required_modules,
       license='MIT',
       packages=get_packages(),

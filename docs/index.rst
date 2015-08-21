@@ -9,15 +9,15 @@ There are two types of developers in this world: those who love state
 machines and those who *will* eventually.
 
 I fall in the first camp. I think it is really important to have a
-declarative way to define the states of an object. That’s why I
-developed ``state_machine``.
+declarative way to define the states of an object. That’s why we are
+continuing development of ``statu``.
 
 Install
 -------
 
 .. code:: bash
 
-    pip install state_machine
+    pip install statu
 
 .. |Build Status| image:: https://travis-ci.org/jtushman/state_machine.svg?branch=master
    :target: https://travis-ci.org/jtushman/state_machine

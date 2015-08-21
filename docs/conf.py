@@ -240,8 +240,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'state_machine', u'state_machine Documentation',
-   u'Jonathan Tushman', 'state_machine', 'One line description of project.',
+  ('index', 'statu', u'statu Documentation',
+   u'Disruptive Labs', 'statu', 'A simple python state machine.',
    'Miscellaneous'),
 ]
 

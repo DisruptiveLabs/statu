@@ -9,7 +9,7 @@ except ImportError:
     sqlalchemy = None
     instrumentation = None
 
-from state_machine.orm.base import BaseAdaptor
+from statu.orm.base import BaseAdaptor
 
 
 class SqlAlchemyAdaptor(BaseAdaptor):
