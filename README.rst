@@ -17,7 +17,7 @@ Install
 
 .. code:: bash
 
-    pip install state_machine
+    pip install statu
 
 .. |Build Status| image:: https://travis-ci.org/DisruptiveLabs/statu.svg?branch=master
    :target: https://travis-ci.org/DisruptiveLabs/statu
