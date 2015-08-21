@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 import inspect
+import six
 
 from statu.models import Event, State, InvalidStateTransition
 
@@ -16,7 +17,7 @@ def _get_callbacks(self, when, event_name):
 
 def _get_next_event_names(self):
     next_event_names = set()
-    for event_name, event in self.get_events().iteritems():
+    for event_name, event in six.iteritems(self.get_events()):
         for from_state in event.from_states:
             if from_state.name == self.current_state:
                 next_event_names.add(event_name)

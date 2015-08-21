@@ -19,8 +19,8 @@ Install
 
     pip install state_machine
 
-.. |Build Status| image:: https://travis-ci.org/disruptivelabs/statu.svg?branch=master
-   :target: https://travis-ci.org/disruptivelabs/statu
+.. |Build Status| image:: https://travis-ci.org/DisruptiveLabs/statu.svg?branch=master
+   :target: https://travis-ci.org/DisruptiveLabs/statu
 
 Basic Usage
 -----------

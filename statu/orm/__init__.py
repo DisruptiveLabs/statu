@@ -1,10 +1,9 @@
 from __future__ import absolute_import
 
 from statu.orm.base import BaseAdaptor
-from statu.orm.mongoengine import get_mongo_adaptor
 from statu.orm.sqlalchemy import get_sqlalchemy_adaptor
 
-_adaptors = [get_mongo_adaptor, get_sqlalchemy_adaptor]
+_adaptors = [get_sqlalchemy_adaptor]
 
 
 def get_adaptor(original_class):

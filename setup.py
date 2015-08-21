@@ -1,20 +1,22 @@
 import os
+
 from setuptools import setup
 
 
 def get_packages():
     # setuptools can't do the job :(
     packages = []
-    for root, dirnames, filenames in os.walk('state_machine'):
+    for root, dirnames, filenames in os.walk('statu'):
         if '__init__.py' in filenames:
             packages.append(".".join(os.path.split(root)).strip("."))
 
     return packages
 
-required_modules = []
+
+required_modules = ['six']
 
 setup(name='statu',
-      version='0.3.0',
+      version='0.3.1',
       description='Python State Machines for Humans',
       url='http://github.com/DisruptiveLabs/statu',
       author='Disruptive Labs',
@@ -30,5 +32,5 @@ setup(name='statu',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 2.7',
           'Programming Language :: Python :: 3',
-          ]
+      ]
       )
