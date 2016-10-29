@@ -42,26 +42,26 @@ Basic Usage
 
         @before('sleep')
         def do_one_thing(self):
-            print "{} is sleepy".format(self.name)
+            print("{} is sleepy".format(self.name))
 
         @before('sleep')
         def do_another_thing(self):
-            print "{} is REALLY sleepy".format(self.name)
+            print("{} is REALLY sleepy".format(self.name))
 
         @after('sleep')
         def snore(self):
-            print "Zzzzzzzzzzzz"
+            print("Zzzzzzzzzzzz")
 
         @after('sleep')
         def big_snore(self):
-            print "Zzzzzzzzzzzzzzzzzzzzzz"
+            print("Zzzzzzzzzzzzzzzzzzzzzz")
 
     person = Person()
-    print person.current_state == Person.sleeping       # True
-    print person.is_sleeping                            # True
-    print person.is_running                             # False
+    print(person.current_state == Person.sleeping)      # True
+    print(person.is_sleeping)                           # True
+    print(person.is_running)                            # False
     person.run()
-    print person.is_running                             # True
+    print(person.is_running)                            # True
     person.sleep()
 
     # Billy is sleepy
@@ -69,7 +69,7 @@ Basic Usage
     # Zzzzzzzzzzzz
     # Zzzzzzzzzzzzzzzzzzzzzz
 
-    print person.is_sleeping                            # True
+    print(person.is_sleeping)                           # True
 
 Features
 --------
@@ -120,19 +120,19 @@ datastore.
 
             @before('sleep')
             def do_one_thing(self):
-                print "{} is sleepy".format(self.name)
+                print("{} is sleepy".format(self.name))
 
             @before('sleep')
             def do_another_thing(self):
-                print "{} is REALLY sleepy".format(self.name)
+                print("{} is REALLY sleepy".format(self.name))
 
             @after('sleep')
             def snore(self):
-                print "Zzzzzzzzzzzz"
+                print("Zzzzzzzzzzzz")
 
             @after('sleep')
             def snore(self):
-                print "Zzzzzzzzzzzzzzzzzzzzzz"
+                print("Zzzzzzzzzzzzzzzzzzzzzz")
 
 
         person = Person()
