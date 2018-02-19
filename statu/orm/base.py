@@ -34,6 +34,8 @@ def _get_next_event_methods(self):
 
 
 class BaseAdaptor(object):
+    property_type = property
+
     def __init__(self, original_class):
         self.original_class = original_class
 
@@ -60,7 +62,7 @@ class BaseAdaptor(object):
                     def f(self):
                         return self.aasm_state == str(member)
 
-                    return property(f)
+                    return self.property_type(f)
 
                 is_method_dict[is_method_string] = is_method_builder(member)
 

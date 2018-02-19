@@ -1,5 +1,7 @@
 from __future__ import absolute_import
 
+from sqlalchemy.ext.hybrid import hybrid_property
+
 try:
     import sqlalchemy
     from sqlalchemy import inspection
@@ -13,6 +15,8 @@ from statu.orm.base import BaseAdaptor
 
 
 class SqlAlchemyAdaptor(BaseAdaptor):
+    property_type = hybrid_property
+
     def extra_class_members(self, initial_state):
         return {'aasm_state': sqlalchemy.Column(sqlalchemy.String)}
 
