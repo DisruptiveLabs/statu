@@ -22,8 +22,10 @@ def before(before_what):
         frame = inspect.currentframe()
         calling_class = get_function_name(frame)
 
-        calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}})
-        calling_class_dict['before'].setdefault(before_what, []).append(func)
+        calling_class_dict = get_callback_cache().setdefault(
+            calling_class, {"before": {}, "after": {}}
+        )
+        calling_class_dict["before"].setdefault(before_what, []).append(func)
 
         return func
 
@@ -35,8 +37,10 @@ def after(after_what):
         frame = inspect.currentframe()
         calling_class = get_function_name(frame)
 
-        calling_class_dict = get_callback_cache().setdefault(calling_class, {'before': {}, 'after': {}})
-        calling_class_dict['after'].setdefault(after_what, []).append(func)
+        calling_class_dict = get_callback_cache().setdefault(
+            calling_class, {"before": {}, "after": {}}
+        )
+        calling_class_dict["after"].setdefault(after_what, []).append(func)
 
         return func
 
@@ -53,6 +57,6 @@ def acts_as_state_machine(original_class):
 
 def with_state_machine_events(clazz):
     global _temp_callback_cache
-    setattr(clazz, 'callback_cache', _temp_callback_cache)
+    setattr(clazz, "callback_cache", _temp_callback_cache)
     _temp_callback_cache = None
     return clazz

@@ -20,14 +20,16 @@ def requires_sqlalchemy(func):
         return pytest.mark.skip(func)
     return func
 
+
 ###############################################################################
 # Plain Old In Memory Tests
 ###############################################################################
 
+
 def test_state_machine():
     @acts_as_state_machine
-    class Robot():
-        name = 'R2-D2'
+    class Robot:
+        name = "R2-D2"
 
         sleeping = State(initial=True)
         running = State()
@@ -37,24 +39,24 @@ def test_state_machine():
         cleanup = Event(from_states=running, to_state=cleaning)
         sleep = Event(from_states=(running, cleaning), to_state=sleeping)
 
-        @before('sleep')
+        @before("sleep")
         def do_one_thing(self):
             print("{} is sleepy".format(self.name))
 
-        @before('sleep')
+        @before("sleep")
         def do_another_thing(self):
             print("{} is REALLY sleepy".format(self.name))
 
-        @after('sleep')
+        @after("sleep")
         def snore(self):
             print("Zzzzzzzzzzzz")
 
-        @after('sleep')
+        @after("sleep")
         def snore(self):
             print("Zzzzzzzzzzzzzzzzzzzzzz")
 
     robot = Robot()
-    assert robot.current_state == 'sleeping'
+    assert robot.current_state == "sleeping"
     assert robot.is_sleeping
     assert not robot.is_running
     robot.run()
@@ -65,8 +67,8 @@ def test_state_machine():
 
 def test_state_machine_no_callbacks():
     @acts_as_state_machine
-    class Robot():
-        name = 'R2-D2'
+    class Robot:
+        name = "R2-D2"
 
         sleeping = State(initial=True)
         running = State()
@@ -77,7 +79,7 @@ def test_state_machine_no_callbacks():
         sleep = Event(from_states=(running, cleaning), to_state=sleeping)
 
     robot = Robot()
-    assert robot.current_state == 'sleeping'
+    assert robot.current_state == "sleeping"
     assert robot.is_sleeping
     assert not robot.is_running
     robot.run()
@@ -97,7 +99,7 @@ def test_multiple_machines():
         cleanup = Event(from_states=running, to_state=cleaning)
         sleep = Event(from_states=(running, cleaning), to_state=sleeping)
 
-        @before('run')
+        @before("run")
         def on_run(self):
             things_done.append("Person.ran")
 
@@ -109,15 +111,15 @@ def test_multiple_machines():
         run = Event(from_states=sleeping, to_state=running)
         sleep = Event(from_states=(running,), to_state=sleeping)
 
-        @before('run')
+        @before("run")
         def on_run(self):
             things_done.append("Dog.ran")
 
     things_done = []
     person = Person()
     dog = Dog()
-    assert person.current_state == 'sleeping'
-    assert dog.current_state == 'sleeping'
+    assert person.current_state == "sleeping"
+    assert dog.current_state == "sleeping"
     assert person.is_sleeping
     assert dog.is_sleeping
     person.run()
@@ -133,27 +135,27 @@ def test_state_machine_inheritance():
         run = Event(from_states=sleeping, to_state=running)
         sleep = Event(from_states=(running,), to_state=sleeping)
 
-        @before('run')
+        @before("run")
         def on_run(self):
             things_done.append("Dog.ran")
 
     @with_state_machine_events
     class Puppy(Dog):
-        @before('run')
+        @before("run")
         def on_sleep(self):
             things_done.append("Puppy.ran_fast")
 
     things_done = []
     dog = Dog()
     puppy = Puppy()
-    assert dog.current_state == 'sleeping'
-    assert puppy.current_state == 'sleeping'
+    assert dog.current_state == "sleeping"
+    assert puppy.current_state == "sleeping"
 
     assert dog.is_sleeping
     assert puppy.is_sleeping
     dog.run()
     puppy.run()
-    assert things_done == ['Dog.ran', 'Puppy.ran_fast', 'Dog.ran']
+    assert things_done == ["Dog.ran", "Puppy.ran_fast", "Dog.ran"]
 
 
 ###################################################################################
@@ -165,11 +167,11 @@ def test_sqlalchemy_state_machine():
     from sqlalchemy.orm import sessionmaker
 
     Base = declarative_base()
-    engine = sqlalchemy.create_engine('sqlite:///:memory:', echo=True)
+    engine = sqlalchemy.create_engine("sqlite:///:memory:", echo=True)
 
     @acts_as_state_machine
     class Puppy(Base):
-        __tablename__ = 'puppies'
+        __tablename__ = "puppies"
         id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
         name = sqlalchemy.Column(sqlalchemy.String)
 
@@ -181,19 +183,19 @@ def test_sqlalchemy_state_machine():
         cleanup = Event(from_states=running, to_state=cleaning)
         sleep = Event(from_states=(running, cleaning), to_state=sleeping)
 
-        @before('sleep')
+        @before("sleep")
         def do_one_thing(self):
             print("{} is sleepy".format(self.name))
 
-        @before('sleep')
+        @before("sleep")
         def do_another_thing(self):
             print("{} is REALLY sleepy".format(self.name))
 
-        @after('sleep')
+        @after("sleep")
         def snore(self):
             print("Zzzzzzzzzzzz")
 
-        @after('sleep')
+        @after("sleep")
         def snore(self):
             print("Zzzzzzzzzzzzzzzzzzzzzz")
 
@@ -202,7 +204,7 @@ def test_sqlalchemy_state_machine():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    puppy = Puppy(name='Ralph')
+    puppy = Puppy(name="Ralph")
 
     assert puppy.current_state == Puppy.sleeping
     assert puppy.is_sleeping
@@ -225,11 +227,11 @@ def test_sqlalchemy_state_machine_with_hybrid_property():
     from sqlalchemy.orm import sessionmaker
 
     Base = declarative_base()
-    engine = sqlalchemy.create_engine('sqlite:///:memory:', echo=True)
+    engine = sqlalchemy.create_engine("sqlite:///:memory:", echo=True)
 
     @acts_as_state_machine
     class Puppy(Base):
-        __tablename__ = 'puppies'
+        __tablename__ = "puppies"
         id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
         name = sqlalchemy.Column(sqlalchemy.String)
 
@@ -250,7 +252,7 @@ def test_sqlalchemy_state_machine_with_hybrid_property():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    puppy = Puppy(name='Ralph')
+    puppy = Puppy(name="Ralph")
     puppy2 = Puppy()
 
     session.add(puppy)
@@ -267,11 +269,11 @@ def test_sqlalchemy_state_machine_with_is_hybrid_properties():
     from sqlalchemy.orm import sessionmaker
 
     Base = declarative_base()
-    engine = sqlalchemy.create_engine('sqlite:///:memory:', echo=True)
+    engine = sqlalchemy.create_engine("sqlite:///:memory:", echo=True)
 
     @acts_as_state_machine
     class Puppy(Base):
-        __tablename__ = 'puppies_with_properties'
+        __tablename__ = "puppies_with_properties"
         id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
         name = sqlalchemy.Column(sqlalchemy.String)
 
@@ -288,7 +290,7 @@ def test_sqlalchemy_state_machine_with_is_hybrid_properties():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    session.add(Puppy(name='Ralph'))
+    session.add(Puppy(name="Ralph"))
     session.commit()
 
     assert session.query(Puppy).filter(Puppy.is_sleeping).all()
@@ -297,17 +299,17 @@ def test_sqlalchemy_state_machine_with_is_hybrid_properties():
 
 @requires_sqlalchemy
 def test_sqlalchemy_state_machine_no_callbacks():
-    ''' This is to make sure that the state change will still work even if no callbacks are registered.
-    '''
+    """ This is to make sure that the state change will still work even if no callbacks are registered.
+    """
     from sqlalchemy.ext.declarative import declarative_base
     from sqlalchemy.orm import sessionmaker
 
     Base = declarative_base()
-    engine = sqlalchemy.create_engine('sqlite:///:memory:', echo=True)
+    engine = sqlalchemy.create_engine("sqlite:///:memory:", echo=True)
 
     @acts_as_state_machine
     class Kitten(Base):
-        __tablename__ = 'kittens'
+        __tablename__ = "kittens"
         id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
         name = sqlalchemy.Column(sqlalchemy.String)
 
@@ -324,7 +326,7 @@ def test_sqlalchemy_state_machine_no_callbacks():
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    kitten = Kitten(name='Kit-Kat')
+    kitten = Kitten(name="Kit-Kat")
 
     assert kitten.current_state == Kitten.sleeping
     assert kitten.is_sleeping
@@ -342,17 +344,17 @@ def test_sqlalchemy_state_machine_no_callbacks():
 
 @requires_sqlalchemy
 def test_sqlalchemy_state_machine_using_initial_state():
-    ''' This is to make sure that the database will save the object with the initial state.
-    '''
+    """ This is to make sure that the database will save the object with the initial state.
+    """
     from sqlalchemy.ext.declarative import declarative_base
     from sqlalchemy.orm import sessionmaker
 
     Base = declarative_base()
-    engine = sqlalchemy.create_engine('sqlite:///:memory:', echo=True)
+    engine = sqlalchemy.create_engine("sqlite:///:memory:", echo=True)
 
     @acts_as_state_machine
     class Penguin(Base):
-        __tablename__ = 'penguins'
+        __tablename__ = "penguins"
         id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True)
         name = sqlalchemy.Column(sqlalchemy.String)
 
@@ -370,7 +372,7 @@ def test_sqlalchemy_state_machine_using_initial_state():
     session = Session()
 
     # Note: No state transition occurs between the initial state and when it's saved to the database.
-    penguin = Penguin(name='Tux')
+    penguin = Penguin(name="Tux")
     assert penguin.current_state == Penguin.sleeping
     assert penguin.is_sleeping
 
@@ -384,8 +386,8 @@ def test_sqlalchemy_state_machine_using_initial_state():
 
 def test_events_and_next_event_names():
     @acts_as_state_machine
-    class Robot():
-        name = 'R2-D2'
+    class Robot:
+        name = "R2-D2"
 
         sleeping = State(initial=True)
         running = State()
@@ -395,31 +397,31 @@ def test_events_and_next_event_names():
         cleanup = Event(from_states=running, to_state=cleaning)
         sleep = Event(from_states=(running, cleaning), to_state=sleeping)
 
-        @before('sleep')
+        @before("sleep")
         def do_one_thing(self):
             print("{} is sleepy".format(self.name))
 
-        @before('sleep')
+        @before("sleep")
         def do_another_thing(self):
             print("{} is REALLY sleepy".format(self.name))
 
-        @after('sleep')
+        @after("sleep")
         def snore(self):
             print("Zzzzzzzzzzzz")
 
-        @after('sleep')
+        @after("sleep")
         def snore(self):
             print("Zzzzzzzzzzzzzzzzzzzzzz")
 
     robot = Robot()
-    assert robot.current_state == 'sleeping'
+    assert robot.current_state == "sleeping"
     assert robot.is_sleeping
     assert not robot.is_running
     events = robot.get_events()
     event_names = events.keys()
-    assert sorted(event_names) == sorted(['sleep', 'cleanup', 'run'])
+    assert sorted(event_names) == sorted(["sleep", "cleanup", "run"])
     next_event_names = robot.get_next_event_names()
-    assert next_event_names == ['run']
+    assert next_event_names == ["run"]
     dynamic_event_name = next_event_names[0]
     dynamic_event_method = getattr(robot, dynamic_event_name)
     dynamic_event_method()
@@ -427,15 +429,15 @@ def test_events_and_next_event_names():
 
     # Demonstrate getting the next event method using getattr with the event name.
     next_event_names = robot.get_next_event_names()
-    assert sorted(next_event_names) == sorted(['cleanup', 'sleep'])
-    dynamic_event_name = 'sleep'
+    assert sorted(next_event_names) == sorted(["cleanup", "sleep"])
+    dynamic_event_name = "sleep"
     dynamic_event_method = getattr(robot, dynamic_event_name)
     dynamic_event_method()
     assert robot.is_sleeping
 
     # Demonstrate getting the next event method using the get_next_events method.
     next_event_methods = robot.get_next_event_methods()
-    assert list(next_event_methods.keys()) == ['run']
-    dynamic_event_method = next_event_methods['run']
+    assert list(next_event_methods.keys()) == ["run"]
+    dynamic_event_method = next_event_methods["run"]
     dynamic_event_method()
     assert robot.is_running
