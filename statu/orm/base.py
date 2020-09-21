@@ -8,10 +8,12 @@ from statu.models import Event, State, InvalidStateTransition
 def _get_callbacks(self, when, event_name):
     callbacks = []
     for clazz in inspect.getmro(self.__class__):
-        if hasattr(clazz, 'callback_cache') and clazz.callback_cache:
+        if hasattr(clazz, "callback_cache") and clazz.callback_cache:
             if clazz.__name__ in clazz.callback_cache:
                 if event_name in clazz.callback_cache[clazz.__name__][when]:
-                    callbacks.extend(clazz.callback_cache[clazz.__name__][when][event_name])
+                    callbacks.extend(
+                        clazz.callback_cache[clazz.__name__][when][event_name]
+                    )
     return callbacks
 
 
@@ -45,7 +47,9 @@ class BaseAdaptor(object):
     def process_states(self, original_class):
         initial_state = None
         is_method_dict = dict()
-        for member, value in self.get_potential_state_machine_attributes(original_class):
+        for member, value in self.get_potential_state_machine_attributes(
+            original_class
+        ):
 
             if isinstance(value, State):
                 if value.initial:
@@ -54,7 +58,7 @@ class BaseAdaptor(object):
                     initial_state = value
 
                 # add its name to itself:
-                setattr(value, 'name', member)
+                setattr(value, "name", member)
 
                 is_method_string = "is_" + member
 
@@ -72,7 +76,9 @@ class BaseAdaptor(object):
         _adaptor = self
         event_method_dict = dict()
         events = {}
-        for member, value in self.get_potential_state_machine_attributes(original_class):
+        for member, value in self.get_potential_state_machine_attributes(
+            original_class
+        ):
             if isinstance(value, Event):
                 # Create event methods
 
@@ -84,26 +90,28 @@ class BaseAdaptor(object):
 
                         # fire before_change
                         failed = False
-                        for callback in _get_callbacks(self, 'before', event_name):
+                        for callback in _get_callbacks(self, "before", event_name):
                             result = callback(self)
                             if result is False:
-                                print("One of the 'before' callbacks returned false, breaking")
+                                print(
+                                    "One of the 'before' callbacks returned false, breaking"
+                                )
                                 failed = True
                                 break
 
-                        #change state
+                        # change state
                         if not failed:
                             _adaptor.update(self, event_description.to_state.name)
 
-                            #fire after_change
-                            for callback in _get_callbacks(self, 'after', event_name):
+                            # fire after_change
+                            for callback in _get_callbacks(self, "after", event_name):
                                 callback(self)
 
                     return f
 
                 event_method_dict[member] = event_meta_method(member, value)
                 events[member] = value
-        event_method_dict['get_events'] = lambda self: events
+        event_method_dict["get_events"] = lambda self: events
         return event_method_dict
 
     def modifed_class(self, original_class, callback_cache):
@@ -111,7 +119,7 @@ class BaseAdaptor(object):
         class_name = original_class.__name__
         class_dict = dict()
 
-        class_dict['callback_cache'] = callback_cache
+        class_dict["callback_cache"] = callback_cache
 
         def current_state_method():
             def f(self):
@@ -119,9 +127,9 @@ class BaseAdaptor(object):
 
             return property(f)
 
-        class_dict['current_state'] = current_state_method()
-        class_dict['get_next_event_names'] = _get_next_event_names
-        class_dict['get_next_event_methods'] = _get_next_event_methods
+        class_dict["current_state"] = current_state_method()
+        class_dict["get_next_event_names"] = _get_next_event_names
+        class_dict["get_next_event_methods"] = _get_next_event_methods
 
         # Get states
         state_method_dict, initial_state = self.process_states(original_class)
