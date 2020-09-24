@@ -44,7 +44,7 @@ class SqlAlchemyAdaptor(BaseAdaptor):
             class_dict.update(self.extra_class_members(initial_state))
             class_dict.update(state_method_dict)
 
-            @event.listens_for(original_class, "init")
+            @event.listens_for(original_class, "init", propagate=True)
             def class_init_aasm_state(target, _args, _kwargs):
                 target.aasm_state = initial_state.name
 
