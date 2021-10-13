@@ -11,7 +11,7 @@ except ImportError:
     sqlalchemy = None
     instrumentation = None
 
-from statu.orm.base import BaseAdaptor
+from statu.orm.base import BaseAdaptor, _get_next_event_methods, _get_next_event_names
 
 
 class SqlAlchemyAdaptor(BaseAdaptor):
@@ -35,6 +35,8 @@ class SqlAlchemyAdaptor(BaseAdaptor):
             return property(f)
 
         setattr(original_class, "current_state", current_state_method())
+        setattr(original_class, "get_next_event_names", _get_next_event_names)
+        setattr(original_class, "get_next_event_methods", _get_next_event_methods)
         setattr(original_class, "aasm_state", sqlalchemy.Column(sqlalchemy.String))
 
         @event.listens_for(sqlalchemy.orm.mapper, "after_configured", once=True)

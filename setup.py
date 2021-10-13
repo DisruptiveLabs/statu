@@ -14,7 +14,7 @@ def get_packages():
 
 
 setup(name='statu',
-      version='0.3.4',
+      version='0.3.5',
       description='Python State Machines for Humans',
       url='http://github.com/DisruptiveLabs/statu',
       author='Disruptive Labs',
